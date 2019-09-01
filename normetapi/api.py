@@ -33,13 +33,15 @@ def _check_status(response):
     return False, status, response.content
 
 
-def get_request(url):
+def get_request(url, decode=None):
     """Get some data using the API and the provided url."""
     response = requests.get(url)
     request_ok, status, msg = _check_status(response)
     data = None
     if request_ok:
-        data = response.content.decode('utf-8')
+        data = response.content
+        if decode is not None:
+            data = data.decode('utf-8')
     else:
         print('Could not get data:')
         print('Status: {}'.format(status))
@@ -77,5 +79,61 @@ def location_forecast(lat, lon, msl=None):
     if msl is not None:
         url += '&msg={msl}'.format(msl=msl)
 
+    data = get_request(url, decode='utf-8')
+    return data
+
+
+def weathericon(symbol, image_type='png', night=False, polar_night=False,
+                output_file=None):
+    """Get a weather icon.
+
+    Parameters
+    ----------
+    symbol : int
+        The symbol we are to get.
+    image_type : string, optional
+        The format for the image to get. Valid types are "png", "svg"
+        or "svg+xml".
+    night : boolean, optional
+        If True, we will get a moon symbol.
+    polar_night : boolean, optional
+        If True, we will get a polar night symbol.
+    output_file : string, optional
+        A file name which we will write the icon to.
+
+    Returns
+    -------
+    image :
+        The image dowloaded.
+
+    See Also
+    --------
+    https://api.met.no/weatherapi/weathericon/_/documentation/
+
+    """
+    if image_type not in ('svg', 'png', 'svg+xml'):
+        raise ValueError('Image type {} not supported!'.format(image_type))
+    post_image_type = image_type
+    if '+' in image_type:
+        post_image_type = image_type.replace('+', '%2B')
+    url = (
+        '{base}/weathericon/1.1/?symbol={symbol}&'
+        'content_type=image/{image_type}'
+    ).format(
+        base=API_URL,
+        symbol=symbol,
+        image_type=post_image_type,
+    )
+    if night and polar_night:
+        raise ValueError(
+            'The settings night and polar_night can not both be True!'
+        )
+    if night:
+        url += '&is_night=1'
+    if polar_night:
+        url += '&is_polarnight=1'
     data = get_request(url)
+    if output_file is not None:
+        with open(output_file, 'wb') as output:
+            output.write(data)
     return data

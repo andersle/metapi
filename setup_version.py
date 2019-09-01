@@ -6,22 +6,15 @@ normetapi -  A package for interacting with the MET Norway Weather API.
 Copyright (C) 2019, Anders Lervik.
 This file only generates the verison info.
 """
+import ast
 import os
 import pathlib
 import subprocess
+import sys
 
 
-# For setting version. This is copied from Numpy's setup.py.
-MAJOR = 0
-MINOR = 0
-MICRO = 1
-DEV = 0
-ISRELEASED = True
-
-if not ISRELEASED:
-    VERSION = '{:d}.{:d}.{:d}.dev{:d}'.format(MAJOR, MINOR, MICRO, DEV)
-else:
-    VERSION = '{:d}.{:d}.{:d}'.format(MAJOR, MINOR, MICRO)
+VERSION_DEV = '{major:d}.{minor:d}.{micro:d}.dev{dev:d}'
+VERSION = '{major:d}.{minor:d}.{micro:d}'
 
 VERSION_FILE = pathlib.Path('normetapi').joinpath('version.py')
 
@@ -45,8 +38,6 @@ if not RELEASE:
 
 def get_git_version():
     """Get the git revision as a string.
-
-    This method is adapted from Numpy's setup.py
 
     Returns
     -------
@@ -75,10 +66,13 @@ def get_git_version():
     return git_revision
 
 
-def get_version_info():
+def get_version_info(version):
     """Return the version number for normetapi.
 
-    This method is adapted from Numpy's setup.py.
+    Parameters
+    ----------
+    version : dict
+        A dict containing the current version info.
 
     Returns
     -------
@@ -88,9 +82,9 @@ def get_version_info():
         The git revision number.
 
     """
-    if os.path.exists('.git'):
+    if pathlib.Path('.git').is_dir():
         git_revision = get_git_version()
-    elif os.path.exists(VERSION_FILE):
+    elif pathlib.Path(VERSION_FILE).is_file():
         try:
             from normetapi.version import git_revision
         except ImportError:
@@ -99,34 +93,123 @@ def get_version_info():
                               'before building.')
     else:
         git_revision = 'unknown'
-    if not ISRELEASED:
-        git_version = ''.join([VERSION.split('dev')[0],
-                               'dev{:d}+'.format(DEV),
-                               git_revision[:7]])
+    if not version['is_released']:
+        git_version = ''.join(
+            [
+                version['version'].split('dev')[0],
+                'dev{:d}+'.format(version['dev']),
+                git_revision[:7]
+            ]
+        )
     else:
-        git_version = VERSION
-    full_version = VERSION
+        git_version = version['version']
+    full_version = version['version']
     return full_version, git_revision, git_version
 
 
-def write_version_py():
+def write_version_py(version):
     """Create a file with the version info for normetapi.
 
-    This method is adapted from Numpy's setup.py.
+    Parameters
+    ----------
+    version : dict
+        A dict containing the current version info.
 
     """
-    full_version, git_revision, git_version = get_version_info()
-    version_txt = VERSION_TXT.format(
-        version=VERSION,
-        full_version=full_version,
-        git_revision=git_revision,
-        git_version=git_version,
-        release=ISRELEASED
-    )
     with open(VERSION_FILE, 'wt') as vfile:
-        vfile.write(version_txt)
-    return full_version
+        vfile.write(
+            VERSION_TXT.format(
+                version=version['version'],
+                full_version=version['full_version'],
+                git_revision=version['git_revision'],
+                git_version=version['git_version'],
+                release=version['is_released'],
+            )
+        )
+    return version['full_version']
+
+
+def get_current_version():
+    """Return the current major, minro, micro & dev version set."""
+    version = {
+        'major': None,
+        'minor': None,
+        'micro': None,
+        'dev': None,
+    }
+    if pathlib.Path(VERSION_FILE).is_file():
+        with open(VERSION_FILE, 'r') as infile:
+            for lines in infile:
+                if lines.startswith('FULL_VERSION ='):
+                    version_line = ast.literal_eval(
+                        lines.split('=')[1].strip()
+                    )
+                    split = version_line.split('.')
+                    version['major'] = int(split[0])
+                    version['minor'] = int(split[1])
+                    version['micro'] = int(split[2])
+                    if 'dev' in version_line:
+                        version['dev'] = int(split[3].split('dev')[1])
+    return version
+
+
+def main(bump=False):
+    """Set the version and create a version.py file.
+
+    Parameters
+    ----------
+    bump : boolean, optional
+        If bump is True, we will attempt to increase the micro version by 1.
+
+    """
+    # Hard-coded version:
+    version = {
+        'major': 0,
+        'minor': 0,
+        'micro': 1,
+        'dev': 0,
+        'is_released': True,
+        'version': None,
+        'git_revision': None,
+        'git_version': None,
+        'full_version': None
+    }
+
+    if bump:
+        current = get_current_version()
+        for key, val in current.items():
+            if val is not None:
+                val_new = val + 1 if key == 'micro' else val
+                print('Setting {} to {}'.format(key, val_new))
+                version[key] = val_new
+
+    if version['is_released']:
+        version_str = VERSION.format(
+            major=version['major'],
+            minor=version['minor'],
+            micro=version['micro'],
+        )
+    else:
+        version_str = VERSION_DEV.format(
+            major=version['major'],
+            minor=version['minor'],
+            micro=version['micro'],
+            dev=version['dev'],
+        )
+    version['version'] = version_str
+
+    full_version, git_revision, git_version = get_version_info(version)
+
+    version['full_version'] = full_version
+    version['git_revision'] = git_revision
+    version['git_version'] = git_version
+
+    print(
+        'Setting version to: {}'.format(
+            write_version_py(version)
+        )
+    )
 
 
 if __name__ == '__main__':
-    print('Setting version to: {}'.format(write_version_py()))
+    main(bump=len(sys.argv)>1)
