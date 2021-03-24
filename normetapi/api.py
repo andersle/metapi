@@ -47,9 +47,61 @@ def get_request(url, decode=None):
         if decode is not None:
             data = data.decode('utf-8')
     else:
-        print('Could not get data:')
-        print(f'Status: {status}')
-        print(f'MSG: {msg}')
+        data = json.dumps(
+            {
+                'error': 'Could not get data!',
+                'status': status,
+                'message': msg,
+            }
+        )
+    return data
+
+
+def _get_forecast(lat, lon, altitude=None, style='compact',
+                  forecast_type='location'):
+    """Get a forecast for the given position.
+
+    Parameters
+    ----------
+    lat : float
+        The latitude to get the forecast for.
+    lon : float
+        The longitude to get the forecast for.
+    altitude : int, optional
+        The height above sea level to get the forecast for.
+    style : string, optional
+        Selects the type of forcast we will get. Two options are
+        supported "complete" (JSON forecast with all values) and
+        "compact" (a shorter version with only the most used
+        parameters).
+    forecast_type : string, optional
+        The type of forcast we will get. This can be "location"
+        for a location based forecast or "nowcast" for the
+        immediate weather forecast.
+
+    Returns
+    -------
+    data : dict
+        The raw data containing the forecast.
+    """
+    if forecast_type not in ('locationforecast', 'nowcast'):
+        raise ValueError(
+            '"forecast_type" must be "locationforecast" or "nowcast".'
+        )
+    if forecast_type == 'locationforecast':
+        if style not in ('compact', 'complete'):
+            raise ValueError('"style" must be "compact" or "complete".')
+    elif forecast_type == 'nowcast':
+        if style != 'complete':
+            raise ValueError('"style" must be "complete" for "nowcast".')
+    url = f'{API_URL}/{forecast_type}/2.0/{style}?lat={lat}&lon={lon}'
+    if altitude is not None:
+        url += f'&altitude={altitude}'
+    ret = get_request(url, decode='utf-8')
+    try:
+        data = json.loads(ret)
+    except ValueError:
+        data = {'error': 'could not decode JSON!'}
     return data
 
 
@@ -66,13 +118,8 @@ def location_forecast(lat, lon, altitude=None, style='compact'):
         The height above sea level to get the forecast for.
     style : string, optional
         Selects the type of forcast we will get. Two options are
-        supported:
-
-        * complete: JSON forecast with all values.
-
-        * compact: A shorter version with only the most used
-          parameters.
-
+        supported "complete" (JSON forecast with all values) and
+        "compact" (a shorter version with only the most used
 
     Returns
     -------
@@ -82,15 +129,34 @@ def location_forecast(lat, lon, altitude=None, style='compact'):
     See Also
     --------
     https://api.met.no/weatherapi/locationforecast/2.0/documentation
-
     """
-    if style not in ('compact', 'complete'):
-        raise ValueError('"style" must be "compact" or "complete".')
-    url = f'{API_URL}/locationforecast/2.0/{style}?lat={lat}&lon={lon}'
-    if altitude is not None:
-        url += f'&altitude={altitude}'
-    data = json.loads(get_request(url, decode='utf-8'))
-    return data
+    return _get_forecast(lat, lon, altitude=altitude, style=style,
+                         forecast_type='locationforecast')
+
+
+def nowcast(lat, lon, altitude=None):
+    """Immediate weather forecast for the specified location.
+
+    Parameters
+    ----------
+    lat : float
+        The latitude to get the forecast for.
+    lon : float
+        The longitude to get the forecast for.
+    altitude : int, optional
+        The height above sea level to get the forecast for.
+
+    Returns
+    -------
+    data : dict
+        The raw data containing the forecast.
+
+    See Also
+    --------
+    https://api.met.no/weatherapi/nowcast/2.0/documentation
+    """
+    return _get_forecast(lat, lon, altitude=altitude, style='complete',
+                         forecast_type='nowcast')
 
 
 def weathericon(output_file=None, legends=True):
@@ -113,7 +179,6 @@ def weathericon(output_file=None, legends=True):
     See Also
     --------
     https://api.met.no/weatherapi/weathericon/2.0/documentation
-
     """
     url = f'{API_URL}/weathericon/2.0/data'
 
