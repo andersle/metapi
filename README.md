@@ -16,3 +16,11 @@ from normetapi import location_forecast
 forecast = location_forecast(63.4107, 10.4538)
 print(forecast)
 ```
+
+```python
+from normetapi import weathericon
+
+# Get icons:
+_, legend = weathericon(output_file='icons.tgz')
+print(legend)
+```

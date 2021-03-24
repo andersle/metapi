@@ -72,7 +72,7 @@ def location_forecast(lat, lon, altitude=None):
 
     See Also
     --------
-    https://api.met.no/weatherapi/locationforecast/1.9/documentation
+    https://api.met.no/weatherapi/locationforecast/2.0/documentation
 
     """
     url = f'{API_URL}/locationforecast/2.0/compact?lat={lat}&lon={lon}'
@@ -82,53 +82,37 @@ def location_forecast(lat, lon, altitude=None):
     return data
 
 
-def weathericon(symbol, image_type='png', night=False, polar_night=False,
-                output_file=None):
-    """Get a weather icon.
+def weathericon(output_file=None, legends=True):
+    """Download archive of weather icons.
 
     Parameters
     ----------
-    symbol : int
-        The symbol we are to get.
-    image_type : string, optional
-        The format for the image to get. Valid types are "png", "svg"
-        or "svg+xml".
-    night : boolean, optional
-        If True, we will get a moon symbol.
-    polar_night : boolean, optional
-        If True, we will get a polar night symbol.
     output_file : string, optional
-        A file name which we will write the icon to.
+        A file name which we will write the icon archive to.
+    legends : boolean, optional
+        Determines if we also attempt to download legends.
+        
 
     Returns
     -------
-    image :
-        The image dowloaded.
+    data : string
+        The raw data (gzipped TAR).
+    legend : dict
+        Legends, if requested.
 
     See Also
     --------
-    https://api.met.no/weatherapi/weathericon/_/documentation/
+    https://api.met.no/weatherapi/weathericon/2.0/documentation
 
     """
-    if image_type not in ('svg', 'png', 'svg+xml'):
-        raise ValueError('Image type {} not supported!'.format(image_type))
-    post_image_type = image_type
-    if '+' in image_type:
-        post_image_type = image_type.replace('+', '%2B')
-    url = (
-        f'{API_URL}/weathericon/1.1/?symbol={symbol}&'
-        f'content_type=image/{post_image_type}'
-    )
-    if night and polar_night:
-        raise ValueError(
-            'The settings night and polar_night can not both be True!'
-        )
-    if night:
-        url += '&is_night=1'
-    if polar_night:
-        url += '&is_polarnight=1'
+    url = f'{API_URL}/weathericon/2.0/data'
+
     data = get_request(url)
     if output_file is not None:
         with open(output_file, 'wb') as output:
             output.write(data)
-    return data
+    legend = {}
+    if legends:
+        url = f'{API_URL}/weathericon/2.0/legends'
+        legend = json.loads(get_request(url))
+    return data, legend
