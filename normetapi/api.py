@@ -53,7 +53,7 @@ def get_request(url, decode=None):
     return data
 
 
-def location_forecast(lat, lon, altitude=None):
+def location_forecast(lat, lon, altitude=None, style='compact'):
     """Get a location forecast for the given lat, lon location.
 
     Parameters
@@ -62,8 +62,17 @@ def location_forecast(lat, lon, altitude=None):
         The latitude to get the forecast for.
     lon : float
         The longitude to get the forecast for.
-    altitude : float
+    altitude : int, optional
         The height above sea level to get the forecast for.
+    style : string, optional
+        Selects the type of forcast we will get. Two options are
+        supported:
+
+        * complete: JSON forecast with all values.
+
+        * compact: A shorter version with only the most used
+          parameters.
+
 
     Returns
     -------
@@ -75,7 +84,9 @@ def location_forecast(lat, lon, altitude=None):
     https://api.met.no/weatherapi/locationforecast/2.0/documentation
 
     """
-    url = f'{API_URL}/locationforecast/2.0/compact?lat={lat}&lon={lon}'
+    if style not in ('compact', 'complete'):
+        raise ValueError('"style" must be "compact" or "complete".')
+    url = f'{API_URL}/locationforecast/2.0/{style}?lat={lat}&lon={lon}'
     if altitude is not None:
         url += f'&altitude={altitude}'
     data = json.loads(get_request(url, decode='utf-8'))
