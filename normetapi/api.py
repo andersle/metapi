@@ -1,6 +1,7 @@
 # Copyright (c) 2019, Anders Lervik.
 # Distributed under the MIT License. See LICENSE for more info.
 """A module for interfacing the MET Norway Weather API."""
+import json
 import requests
 
 
@@ -35,7 +36,10 @@ def _check_status(response):
 
 def get_request(url, decode=None):
     """Get some data using the API and the provided url."""
-    response = requests.get(url)
+    headers = {
+        'User-Agent': 'https://github.com/andersle/normetapi',
+    }
+    response = requests.get(url, headers=headers)
     request_ok, status, msg = _check_status(response)
     data = None
     if request_ok:
@@ -44,12 +48,12 @@ def get_request(url, decode=None):
             data = data.decode('utf-8')
     else:
         print('Could not get data:')
-        print('Status: {}'.format(status))
-        print('MSG: {}'.format(msg))
+        print(f'Status: {status}')
+        print(f'MSG: {msg}')
     return data
 
 
-def location_forecast(lat, lon, msl=None):
+def location_forecast(lat, lon, altitude=None):
     """Get a location forecast for the given lat, lon location.
 
     Parameters
@@ -58,28 +62,23 @@ def location_forecast(lat, lon, msl=None):
         The latitude to get the forecast for.
     lon : float
         The longitude to get the forecast for.
-    msl : float
+    altitude : float
         The height above sea level to get the forecast for.
 
     Returns
     -------
-    data : string
-        The raw data (xml) containing the forecast.
+    data : dict
+        The raw data containing the forecast.
 
     See Also
     --------
     https://api.met.no/weatherapi/locationforecast/1.9/documentation
 
     """
-    url = '{base}/locationforecast/1.9/?lat={lat}&lon={lon}'.format(
-        base=API_URL,
-        lat=lat,
-        lon=lon
-    )
-    if msl is not None:
-        url += '&msg={msl}'.format(msl=msl)
-
-    data = get_request(url, decode='utf-8')
+    url = f'{API_URL}/locationforecast/2.0/compact?lat={lat}&lon={lon}'
+    if altitude is not None:
+        url += f'&altitude={altitude}'
+    data = json.loads(get_request(url, decode='utf-8'))
     return data
 
 
@@ -117,12 +116,8 @@ def weathericon(symbol, image_type='png', night=False, polar_night=False,
     if '+' in image_type:
         post_image_type = image_type.replace('+', '%2B')
     url = (
-        '{base}/weathericon/1.1/?symbol={symbol}&'
-        'content_type=image/{image_type}'
-    ).format(
-        base=API_URL,
-        symbol=symbol,
-        image_type=post_image_type,
+        f'{API_URL}/weathericon/1.1/?symbol={symbol}&'
+        f'content_type=image/{post_image_type}'
     )
     if night and polar_night:
         raise ValueError(
