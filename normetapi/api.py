@@ -1,4 +1,4 @@
-# Copyright (c) 2019, Anders Lervik.
+# Copyright (c) 2021, Anders Lervik.
 # Distributed under the MIT License. See LICENSE for more info.
 """A module for interfacing the MET Norway Weather API."""
 import json
@@ -91,7 +91,6 @@ def weathericon(output_file=None, legends=True):
         A file name which we will write the icon archive to.
     legends : boolean, optional
         Determines if we also attempt to download legends.
-        
 
     Returns
     -------

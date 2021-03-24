@@ -1,4 +1,4 @@
-# Copyright (c) 2019, Anders Lervik.
+# Copyright (c) 2021, Anders Lervik.
 # Distributed under the MIT License. See LICENSE for more info.
 """Version information for normetapi.
 

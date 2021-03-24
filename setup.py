@@ -1,9 +1,9 @@
-# Copyright (c) 2019, Anders Lervik.
+# Copyright (c) 2021, Anders Lervik.
 # Distributed under the MIT License. See LICENSE for more info.
 """
 normeatapi - A package for interacting with the MET Norway Weather API.
 
-Copyright (C) 2019, Anders Lervik.
+Copyright (C) 2021, Anders Lervik.
 """
 import ast
 import pathlib

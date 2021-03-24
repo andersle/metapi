@@ -1,9 +1,9 @@
-# Copyright (c) 2019, Anders Lervik.
+# Copyright (c) 2021, Anders Lervik.
 # Distributed under the MIT License. See LICENSE for more info.
 """
 normetapi -  A package for interacting with the MET Norway Weather API.
 
-Copyright (C) 2019, Anders Lervik.
+Copyright (C) 2021, Anders Lervik.
 This file only generates the verison info.
 """
 import ast
@@ -18,7 +18,7 @@ VERSION = '{major:d}.{minor:d}.{micro:d}'
 
 VERSION_FILE = pathlib.Path('normetapi').joinpath('version.py')
 
-VERSION_TXT = '''# Copyright (c) 2019, Anders Lervik.
+VERSION_TXT = '''# Copyright (c) 2021, Anders Lervik.
 # Distributed under the MIT License. See LICENSE for more info.
 """Version information for normetapi.
 
