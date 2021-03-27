@@ -9,18 +9,18 @@ pip install normetapi
 
 ## Examples
 
-### Getting a forcast for a specified location:
+### Getting a forecast for a specified location:
 
 ```python
 from normetapi import location_forecast
 
-# Get forcast for Trondheim:
+# Get forecast for Trondheim:
 forecast = location_forecast(63.4107, 10.4538)
 print(forecast)
 ```
 
-The forcast will be returned as a dict. See the description
-of [locationforcast](https://api.met.no/weatherapi/locationforecast/2.0/documentation)
+The forecast will be returned as a dictionary. See the description
+of [locationforecast](https://api.met.no/weatherapi/locationforecast/2.0/documentation)
 and the [data model](https://api.met.no/doc/locationforecast/datamodel)
 in the [MET Norway Weather API description](https://api.met.no/).
 
@@ -34,7 +34,7 @@ forecast = nowcast(63.4107, 10.4538, altitude=123)
 print(forecast)
 ```
 
-The forcast will be returned as a dict. See the description
+The forecast will be returned as a dictionary. See the description
 of [nowcast](https://api.met.no/weatherapi/nowcast/2.0/documentation)
 and the [data model](https://api.met.no/doc/locationforecast/datamodel)
 in the [MET Norway Weather API description](https://api.met.no/).
@@ -63,4 +63,4 @@ In particular, to quote the terms of service:
 > in the request with the application/domain name, optionally version number.
 
 Please modify the ``USER_AGENT`` variable in [api.py](normetapi/api.py) to fit your
-indended use.
+intended use.

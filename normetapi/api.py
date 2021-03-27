@@ -73,13 +73,13 @@ def _get_forecast(lat, lon, altitude=None, style='compact',
     altitude : int, optional
         The height above sea level to get the forecast for.
     style : string, optional
-        Selects the type of forcast we will get. Two options are
+        Selects the type of forecast we will get. Two options are
         supported "complete" (JSON forecast with all values) and
         "compact" (a shorter version with only the most used
         parameters).
     forecast_type : string, optional
-        The type of forcast we will get. This can be "location"
-        for a location based forecast or "nowcast" for the
+        The type of forecast we will get. This can be "location"
+        for a location-based forecast or "nowcast" for the
         immediate weather forecast.
 
     Returns
@@ -120,7 +120,7 @@ def location_forecast(lat, lon, altitude=None, style='compact'):
     altitude : int, optional
         The height above sea level to get the forecast for.
     style : string, optional
-        Selects the type of forcast we will get. Two options are
+        Selects the type of forecast we will get. Two options are
         supported "complete" (JSON forecast with all values) and
         "compact" (a shorter version with only the most used
 
@@ -168,7 +168,7 @@ def weathericon(output_file=None, legends=True):
     Parameters
     ----------
     output_file : string, optional
-        A file name which we will write the icon archive to.
+        A file name to which we will write the icon archive to.
     legends : boolean, optional
         Determines if we also attempt to download legends.
 

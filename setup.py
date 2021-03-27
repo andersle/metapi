@@ -1,7 +1,7 @@
 # Copyright (c) 2021, Anders Lervik.
 # Distributed under the MIT License. See LICENSE for more info.
 """
-normeatapi - A library for interacting with the MET Norway Weather API.
+normeatapi - A small library for interacting with the MET Norway Weather API.
 
 Copyright (C) 2021, Anders Lervik.
 """
@@ -47,7 +47,10 @@ def get_requirements():
 setup(
     name='normetapi',
     version=get_version(),
-    description='A small library for interacting with the MET Norway Weather API.',
+    description=(
+        'A small library for interacting with the '
+        'MET Norway Weather API.'
+    ),
     long_description=get_long_description(),
     url='https://github.com/andersle/normetapi',
     author='Anders Lervik',
