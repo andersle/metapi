@@ -3,9 +3,12 @@
 """A module for interfacing the MET Norway Weather API."""
 import json
 import requests
+from .version import VERSION
 
 
 API_URL = 'https://api.met.no/weatherapi'
+USER_AGENT = f'normetapi/{VERSION} https://github.com/andersle/normetapi'
+ATTRIBUTION = 'Data from MET Norway, https://www.met.no/'
 
 
 STATUS = {
@@ -37,7 +40,7 @@ def _check_status(response):
 def get_request(url, decode=None):
     """Get some data using the API and the provided url."""
     headers = {
-        'User-Agent': 'https://github.com/andersle/normetapi',
+        'User-Agent': USER_AGENT,
     }
     response = requests.get(url, headers=headers)
     request_ok, status, msg = _check_status(response)

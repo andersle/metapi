@@ -47,7 +47,7 @@ def get_requirements():
 setup(
     name='normetapi',
     version=get_version(),
-    description='A package for interacting with the MET Norway Weather API.',
+    description='A small library for interacting with the MET Norway Weather API.',
     long_description=get_long_description(),
     url='https://github.com/andersle/normetapi',
     author='Anders Lervik',

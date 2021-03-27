@@ -1,5 +1,5 @@
 # normetapi
-A Python library for interacting with the [MET Norway Weather API](https://api.met.no/).
+A small Python library for interacting with the [MET Norway Weather API](https://api.met.no/).
 
 ## Installation
 
@@ -21,6 +21,7 @@ print(forecast)
 
 The forcast will be returned as a dict. See the description
 of [locationforcast](https://api.met.no/weatherapi/locationforecast/2.0/documentation)
+and the [data model](https://api.met.no/doc/locationforecast/datamodel)
 in the [MET Norway Weather API description](https://api.met.no/).
 
 ### Getting the immediate forecast for a specified location:
@@ -35,6 +36,7 @@ print(forecast)
 
 The forcast will be returned as a dict. See the description
 of [nowcast](https://api.met.no/weatherapi/nowcast/2.0/documentation)
+and the [data model](https://api.met.no/doc/locationforecast/datamodel)
 in the [MET Norway Weather API description](https://api.met.no/).
 
 ### Getting weather icons:
@@ -51,3 +53,14 @@ This will download weather icons as a gzipped tar archive
 and return legends as a dictionary. See the
 description of [weathericon](https://api.met.no/weatherapi/weathericon/2.0/documentation)
 in the [MET Norway Weather API description](https://api.met.no/).
+
+## Terms of service
+
+Please read the [terms of service](https://api.met.no/doc/TermsOfService).
+In particular, to quote the terms of service:
+
+> All requests must (if possible) include an identifying User Agent-string (UA)
+> in the request with the application/domain name, optionally version number.
+
+Please modify the ``USER_AGENT`` in [api.py](normetapi/api.py) to fit your
+indended use.
