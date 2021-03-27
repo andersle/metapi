@@ -52,6 +52,7 @@ setup(
         'MET Norway Weather API.'
     ),
     long_description=get_long_description(),
+    long_description_content_type='text/markdown',
     url='https://github.com/andersle/normetapi',
     author='Anders Lervik',
     author_email='andersle@gmail.com',
