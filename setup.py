@@ -1,9 +1,9 @@
-# Copyright (c) 2019, Anders Lervik.
+# Copyright (c) 2021, Anders Lervik.
 # Distributed under the MIT License. See LICENSE for more info.
 """
-normeatapi - A package for interacting with the MET Norway Weather API.
+normeatapi - A small library for interacting with the MET Norway Weather API.
 
-Copyright (C) 2019, Anders Lervik.
+Copyright (C) 2021, Anders Lervik.
 """
 import ast
 import pathlib
@@ -47,7 +47,10 @@ def get_requirements():
 setup(
     name='normetapi',
     version=get_version(),
-    description='A package for interacting with the MET Norway Weather API.',
+    description=(
+        'A small library for interacting with the '
+        'MET Norway Weather API.'
+    ),
     long_description=get_long_description(),
     url='https://github.com/andersle/normetapi',
     author='Anders Lervik',
@@ -62,7 +65,8 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: POSIX',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Other/Nonlisted Topic',
     ],
     keywords='met api',
