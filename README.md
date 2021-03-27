@@ -62,5 +62,5 @@ In particular, to quote the terms of service:
 > All requests must (if possible) include an identifying User Agent-string (UA)
 > in the request with the application/domain name, optionally version number.
 
-Please modify the ``USER_AGENT`` in [api.py](normetapi/api.py) to fit your
+Please modify the ``USER_AGENT`` variable in [api.py](normetapi/api.py) to fit your
 indended use.
